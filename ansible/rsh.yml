@@ -1,0 +1,11 @@
+---
+- name: Run oc get node command
+  hosts: all
+  tasks:
+    - name: Get OpenShift nodes
+      command: oc get node
+      register: result
+
+    - name: Display OpenShift nodes
+      debug:
+        var: result.stdout
