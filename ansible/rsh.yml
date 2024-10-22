@@ -2,10 +2,10 @@
 - name: Run oc get node command
   hosts: all
   tasks:
-    - name: Get OpenShift nodes
-      command: oc get node
+    - name: Get nodes from OpenShift
+      k8s_info:
+        kind: Node
       register: result
 
-    - name: Display OpenShift nodes
-      debug:
-        var: result.stdout
+    - debug:
+        var: result.resources
