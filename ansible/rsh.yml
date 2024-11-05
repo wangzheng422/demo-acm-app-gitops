@@ -14,7 +14,7 @@
       register: pods
 
     - name: Execute command in each pod
-      k8s_exec:
+      community.kubernetes.k8s_exec:
         namespace: "{{ namespace }}"
         pod: "{{ item.metadata.name }}"
         command: ["ls /"]
