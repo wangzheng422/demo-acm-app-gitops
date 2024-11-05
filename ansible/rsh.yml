@@ -5,7 +5,7 @@
     namespace: your_namespace  # Parameterized namespace
   tasks:
     - name: Get pods of pod-description-writer deployment
-      community.kubernetes.k8s_info:
+      k8s_info:
         api_version: v1
         kind: Pod
         namespace: "{{ namespace }}"
@@ -14,7 +14,7 @@
       register: pods
 
     - name: Execute command in each pod
-      community.kubernetes.k8s_exec:
+      k8s_exec:
         namespace: "{{ namespace }}"
         pod: "{{ item.metadata.name }}"
         command: ["ls /"]
