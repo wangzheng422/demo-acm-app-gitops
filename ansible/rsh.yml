@@ -17,7 +17,7 @@
       kubernetes.core.k8s_exec:
         namespace: "{{ namespace }}"
         pod: "{{ item.metadata.name }}"
-        command: ["ls /"]
+        command: ls /
       loop: "{{ pods.resources }}"
       register: command_result
 
