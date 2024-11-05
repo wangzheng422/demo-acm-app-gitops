@@ -23,4 +23,5 @@
 
     - name: Display command output
       debug:
-        var: command_result.stdout
+        msg: "{{ item.stdout }}"
+      loop: "{{ command_result.results }}"
