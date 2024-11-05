@@ -1,0 +1,10 @@
+---
+apiVersion: ansible.com/v1alpha1
+kind: AnsibleJob
+metadata:
+  name: rsh-job
+  namespace: your-namespace
+spec:
+  job_template_name: rsh-job-template
+  extra_vars:
+    namespace: "{{ namespace }}"

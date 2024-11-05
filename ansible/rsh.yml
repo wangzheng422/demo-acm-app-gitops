@@ -1,11 +1,26 @@
 ---
-- name: Run oc get node command
-  hosts: all
+- name: Run command in pod-description-writer pods
+  hosts: localhost
+  vars:
+    namespace: your_namespace  # Parameterized namespace
   tasks:
-    - name: Get OpenShift nodes
-      command: oc get node
-      register: result
+    - name: Get pods of pod-description-writer deployment
+      k8s_core:
+        api_version: v1
+        kind: Pod
+        namespace: "{{ namespace }}"
+        label_selectors:
+          - app=pod-description-writer
+      register: pods
 
-    - name: Display OpenShift nodes
+    - name: Execute command in each pod
+      k8s_exec:
+        namespace: "{{ namespace }}"
+        pod: "{{ item.metadata.name }}"
+        command: ["ls /"]
+      loop: "{{ pods.resources }}"
+      register: command_result
+
+    - name: Display command output
       debug:
-        var: result.stdout
+        var: command_result.stdout
