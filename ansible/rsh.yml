@@ -5,7 +5,7 @@
     namespace: your_namespace  # Parameterized namespace
   tasks:
     - name: Get pods of pod-description-writer deployment
-      k8s_core:
+      community.kubernetes.k8s_core:
         api_version: v1
         kind: Pod
         namespace: "{{ namespace }}"
