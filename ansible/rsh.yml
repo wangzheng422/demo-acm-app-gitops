@@ -3,25 +3,23 @@
   hosts: localhost
   vars:
     namespace: your_namespace  # Parameterized namespace
+    pod_name: your_pod_name    # Parameterized pod name
   tasks:
-    - name: Get pods of pod-description-writer deployment
+    - name: Get the specified pod
       kubernetes.core.k8s_info:
         api_version: v1
         kind: Pod
         namespace: "{{ namespace }}"
-        label_selectors:
-          - app=pod-description-writer
-      register: pods
+        name: "{{ pod_name }}"
+      register: pod
 
-    - name: Execute command in each pod
+    - name: Execute command in the specified pod
       kubernetes.core.k8s_exec:
         namespace: "{{ namespace }}"
-        pod: "{{ item.metadata.name }}"
+        pod: "{{ pod.resources[0].metadata.name }}"
         command: ls /
-      loop: "{{ pods.resources }}"
       register: command_result
 
     - name: Display command output
       debug:
-        msg: "{{ item.stdout }}"
-      loop: "{{ command_result.results }}"
+        msg: "{{ command_result.stdout }}"
