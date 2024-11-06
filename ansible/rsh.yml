@@ -29,6 +29,10 @@
       command: bash -c "ls -t /wzh-log | head -n 1"
       register: newest_file
 
+    - name: Print out the newest file
+      debug:
+        msg: "Newest file: {{ newest_file.stdout }}"
+
     - name: Upload newest dumped file to target URL
       uri:
         url: "{{ target_url }}"
