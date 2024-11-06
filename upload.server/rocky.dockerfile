@@ -21,7 +21,7 @@ RUN useradd -u 1000 appuser
 RUN chown -R appuser:appuser /app
 
 # Change permissions of the uploads directory
-RUN chmod -R 755 /app/uploads
+# RUN chmod -R 755 /app/uploads
 
 # Switch to the new user
 USER appuser
