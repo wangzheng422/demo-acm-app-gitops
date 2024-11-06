@@ -42,6 +42,6 @@ spec:
     name: upload-server
   port:
     targetPort: 8080
-  tls: {}
-    # termination: edge
-    # insecureEdgeTerminationPolicy: Allow
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Allow
