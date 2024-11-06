@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: upload-server
-        image: quay.io/wangzheng422/qimgs:uplaod.server-v1.0.0
+        image: quay.io/wangzheng422/qimgs:uplaod.server-v1.0.1
         ports:
         - containerPort: 8080
 ---
