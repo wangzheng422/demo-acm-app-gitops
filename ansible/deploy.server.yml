@@ -1,7 +1,7 @@
 - name: Deploy upload-server to OpenShift
   hosts: localhost
   vars:
-    namespace: "{{ target_namespace }}"
+    namespace: target_namespace  # Parameterized namespace
   tasks:
     - name: Ensure namespace exists
       kubernetes.core.k8s:
