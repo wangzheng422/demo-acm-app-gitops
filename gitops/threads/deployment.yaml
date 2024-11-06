@@ -17,7 +17,7 @@ spec:
       - name: my-app-heap-dump
         image: quay.io/wangzheng422/qimgs:simple-java-http-server-threads-2024.07.05.v04
         volumeMounts:
-        - mountPath: /wzh_log
+        - mountPath: /wzh-log
           name: wzh-log-volume
       volumes:
       - name: wzh-log-volume
