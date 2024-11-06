@@ -27,9 +27,9 @@
 
     - name: Find the newest file in /wzh-log directory in the pod
       kubernetes.core.k8s_exec:
-      namespace: "{{ namespace }}"
-      pod: "{{ pod.resources[0].metadata.name }}"
-      command: bash -c "ls -t /wzh-log | head -n 1"
+        namespace: "{{ namespace }}"
+        pod: "{{ pod.resources[0].metadata.name }}"
+        command: bash -c "ls -t /wzh-log | head -n 1"
       register: newest_file
 
     - name: Print out the newest file
@@ -38,9 +38,9 @@
 
     - name: Upload newest dumped file to target URL from within the pod
       kubernetes.core.k8s_exec:
-      namespace: "{{ namespace }}"
-      pod: "{{ pod.resources[0].metadata.name }}"
-      command: bash -c "curl --max-time 600 -F 'file=@/wzh-log/{{ newest_file.stdout }}' {{ target_url }}"
+        namespace: "{{ namespace }}"
+        pod: "{{ pod.resources[0].metadata.name }}"
+        command: bash -c "curl --max-time 600 -F 'file=@/wzh-log/{{ newest_file.stdout }}' {{ target_url }}"
       register: upload_result
 
     - name: Display upload result
