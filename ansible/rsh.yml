@@ -40,8 +40,19 @@
       kubernetes.core.k8s_exec:
         namespace: "{{ namespace }}"
         pod: "{{ pod.resources[0].metadata.name }}"
-        command: bash -c "curl --max-time 600 -F 'file=@/wzh-log/{{ newest_file.stdout }}' {{ target_url }}"
+        command: bash -c "curl --max-time 600 -F 'file=@/wzh-log/{{ newest_file.stdout }}' {{ target_url }}; echo $? > /tmp/curl_exit_code"
       register: upload_result
+
+    - name: Get the curl exit code
+      kubernetes.core.k8s_exec:
+        namespace: "{{ namespace }}"
+        pod: "{{ pod.resources[0].metadata.name }}"
+        command: cat /tmp/curl_exit_code
+      register: curl_exit_code
+
+    - name: Display curl exit code
+      debug:
+        msg: "Curl exit code: {{ curl_exit_code.stdout }}"
 
     - name: Display upload result
       debug:
