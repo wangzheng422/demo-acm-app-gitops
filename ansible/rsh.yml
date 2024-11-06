@@ -25,7 +25,10 @@
       debug:
         msg: "{{ command_result.stdout }}"
 
-    - name: Find the newest file in /wzh-log directory
+    - name: Find the newest file in /wzh-log directory in the pod
+      kubernetes.core.k8s_exec:
+      namespace: "{{ namespace }}"
+      pod: "{{ pod.resources[0].metadata.name }}"
       command: bash -c "ls -t /wzh-log | head -n 1"
       register: newest_file
 
