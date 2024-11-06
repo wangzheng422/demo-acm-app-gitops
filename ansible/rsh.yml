@@ -36,15 +36,11 @@
       debug:
         var: newest_file
 
-    - name: Upload newest dumped file to target URL
-      uri:
-        url: "{{ target_url }}"
-        method: POST
-        body_format: form-multipart
-        body:
-          file: "{{ lookup('file', '/wzh-log/' ~ newest_file.stdout) }}"
-        headers:
-          Content-Type: multipart/form-data
+    - name: Upload newest dumped file to target URL from within the pod
+      kubernetes.core.k8s_exec:
+      namespace: "{{ namespace }}"
+      pod: "{{ pod.resources[0].metadata.name }}"
+      command: bash -c "curl --max-time 600 -F 'file=@/wzh-log/{{ newest_file.stdout }}' {{ target_url }}"
       register: upload_result
 
     - name: Display upload result
