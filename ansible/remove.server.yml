@@ -1,0 +1,16 @@
+- name: Remove upload-server from OpenShift
+  hosts: localhost
+  vars:
+    namespace: target_namespace  # Parameterized namespace
+  tasks:
+    - name: Ensure namespace exists
+      kubernetes.core.k8s:
+        api_version: v1
+        kind: Namespace
+        name: "{{ namespace }}"
+
+    - name: Delete deployment configuration
+      kubernetes.core.k8s:
+        state: absent
+        definition: "{{ lookup('file', '../gitops/upload.server/deployment.yaml') }}"
+        namespace: "{{ namespace }}"
