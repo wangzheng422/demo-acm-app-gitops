@@ -10,8 +10,18 @@ COPY upload.server.py /app/
 # Create the uploads directory
 RUN mkdir -p /app/uploads
 
-# Install Python
-RUN dnf install -y python3
+# Install Python and Flask
+RUN dnf install -y python3 /usr/bin/pip && \
+    python3 -m pip install flask
+
+# Create a user with UID 1000
+RUN useradd -u 1000 appuser
+
+# Change ownership of the /app directory to the new user
+RUN chown -R appuser:appuser /app
+
+# Switch to the new user
+USER appuser
 
 # Expose the port that the server will run on
 EXPOSE 8000
