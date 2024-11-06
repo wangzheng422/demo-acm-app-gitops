@@ -4,6 +4,7 @@
   vars:
     namespace: your_namespace  # Parameterized namespace
     pod_name: your_pod_name    # Parameterized pod name
+    target_url: your_target_url  # Parameterized target URL
   tasks:
     - name: Get the specified pod
       kubernetes.core.k8s_info:
@@ -13,13 +14,32 @@
         name: "{{ pod_name }}"
       register: pod
 
-    - name: Execute command in the specified pod
+    - name: Execute command in the specified pod, causing heap dump
       kubernetes.core.k8s_exec:
         namespace: "{{ namespace }}"
         pod: "{{ pod.resources[0].metadata.name }}"
-        command: ls /
+        command: curl --max-time 600 http://localhost:8080/dumpheap
       register: command_result
 
     - name: Display command output
       debug:
         msg: "{{ command_result.stdout }}"
+
+    - name: Find the newest file in /wzh-log directory
+      command: ls -t /wzh-log | head -n 1
+      register: newest_file
+
+    - name: Upload newest dumped file to target URL
+      uri:
+        url: "{{ target_url }}"
+        method: POST
+        body_format: form-multipart
+        body:
+          file: "{{ lookup('file', '/wzh-log/' ~ newest_file.stdout) }}"
+        headers:
+          Content-Type: multipart/form-data
+      register: upload_result
+
+    - name: Display upload result
+      debug:
+        msg: "{{ upload_result }}"
