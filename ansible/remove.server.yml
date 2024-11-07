@@ -9,6 +9,18 @@
         kind: Namespace
         name: "{{ namespace }}"
 
+    - name: List files and sizes in /app/uploads
+      kubernetes.core.k8s_exec:
+        namespace: "{{ namespace }}"
+        pod: "{{ item.metadata.name }}"
+        command: "ls -lh /app/uploads"
+      with_items: "{{ lookup('kubernetes.core.k8s', kind='Pod', namespace=namespace, label_selector='app=upload-server').resources }}"
+      register: upload_files
+
+    - debug:
+        msg: "{{ item.stdout }}"
+      with_items: "{{ upload_files.results }}"
+
     - name: Delete deployment configuration
       kubernetes.core.k8s:
         state: absent
