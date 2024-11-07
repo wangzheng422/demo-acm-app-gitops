@@ -9,12 +9,21 @@
         kind: Namespace
         name: "{{ namespace }}"
 
+    - name: Get pods of upload-server
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Pod
+        namespace: "{{ namespace }}"
+        label_selectors:
+          - app=upload-server
+      register: upload_server_pods
+
     - name: List files and sizes in /app/uploads
       kubernetes.core.k8s_exec:
         namespace: "{{ namespace }}"
         pod: "{{ item.metadata.name }}"
         command: "ls -lh /app/uploads"
-      with_items: "{{ lookup('kubernetes.core.k8s', kind='Pod', namespace=namespace, label_selector='app=upload-server').resources }}"
+      with_items: "{{ upload_server_pods.resources }}"
       register: upload_files
 
     - debug:
