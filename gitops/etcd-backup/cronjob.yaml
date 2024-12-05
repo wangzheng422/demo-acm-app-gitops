@@ -1,0 +1,35 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: master-node-backup
+  namespace: demo-backup  # Adjust as necessary
+spec:
+  schedule: "0 1 * * *"  # run every mid-night
+  jobTemplate:
+    spec:
+      backoffLimit: 0  # Do not retry on failure
+      template:
+        spec:
+          serviceAccountName: master-backup-sa  # Use the created Service Account
+          hostNetwork: true
+          nodeSelector:
+            node-role.kubernetes.io/master: ""  # Ensure the Job runs on the master node
+          containers:
+          - name: cluster-backup
+            image: registry.redhat.io/openshift4/ose-cli:latest  # Official OpenShift CLI image
+            command: ["/bin/sh", "-c"]
+            args:
+              - |
+                chroot /host /usr/local/bin/cluster-backup.sh /home/core/assets/backup
+            securityContext:
+              privileged: true
+              runAsUser: 0    # Run as root
+            volumeMounts:
+            - name: host-volume
+              mountPath: /host  # Mount the host's root filesystem
+          restartPolicy: Never # Do not restart containers on failure
+          volumes:
+          - name: host-volume
+            hostPath:
+              path: /  # Mount the root filesystem of the master node

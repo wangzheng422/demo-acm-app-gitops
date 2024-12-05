@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: master-node-backup-cronjob-failure
+  namespace: openshift-monitoring
+spec:
+  groups:
+  - name: cronjob-failure-alerts
+    rules:
+    - alert: MasterNodeBackupCronJobFailed
+      expr: sum(kube_job_status_failed{job_name=~"master-node-backup-.*"}) > 0
+      for: 1d
+      labels:
+        severity: critical
+      annotations:
+        summary: "CronJob 'master-node-backup' runs failed"
+        description: "CronJob 'master-node-backup' The last run failed. Please check the relevant logs and resources."
